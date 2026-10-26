@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23006d5b' d='M32 4 56 28 32 60 8 28z'/%3E%3Cpath fill='%23fff' d='m32 14 12 14-12 22-12-22z'/%3E%3C/svg%3E">
+  <title>宝石物性检索 · Chart A + B</title>
+  <style>
+    .input-error{display:block;color:#a32121;font-size:12px;line-height:1.5;margin-top:5px}.input-error:empty{display:none}input[aria-invalid=true]{border-color:#a32121}
+    :root{--ink:#1d2927;--muted:#63716e;--line:#dce4df;--paper:#f7f8f4;--accent:#006d5b;--warm:#dd9b33;--card:#fff}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC",sans-serif;color:var(--ink)}
+    header{padding:40px max(24px,calc((100vw - 1180px)/2));background:#123c36;color:#fff}.eyebrow{font-size:12px;letter-spacing:.11em;opacity:.72}.title{margin:8px 0 6px;font-size:clamp(26px,4vw,42px);letter-spacing:-.04em}.sub{margin:0;color:#d7e6df;font-size:15px}
+    main{max-width:1180px;margin:0 auto;padding:24px}.notice{border-left:4px solid var(--warm);background:#fff9ed;padding:12px 14px;font-size:13px;line-height:1.5;color:#594820;margin-bottom:20px}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 2px 8px #17372a08}.fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.field{min-width:0}.field.search{grid-column:span 2}.field label,.multi legend{display:block;font-size:12px;color:var(--muted);margin:0 0 7px}input{width:100%;border:1px solid #c8d4ce;border-radius:8px;padding:11px;font:inherit;background:#fff;color:var(--ink);font-size:16px}input:focus{outline:3px solid #72bbaa66;border-color:var(--accent)}input[type=range]{padding:0;border:0;accent-color:var(--accent);height:28px;cursor:pointer}.range-label{display:flex!important;justify-content:space-between;align-items:center}.range-label output{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}.hint{font-size:11px;color:var(--muted);margin:6px 0 0}.multi{grid-column:span 2;border:0;margin:0;padding:0;min-width:0}.choices{display:flex;flex-wrap:wrap;gap:7px}.choice{position:relative}.choice input{position:absolute;opacity:0;pointer-events:none}.choice > span{display:block;border:1px solid #c8d4ce;border-radius:999px;padding:8px 11px;background:#fff;font-size:13px;line-height:1;cursor:pointer;transition:.15s}.choice input:checked+span{background:#d9f0e9;border-color:var(--accent);color:#005345;font-weight:650}.calculator{grid-column:span 2;border:1px solid #c8d8d0;border-radius:11px;background:#f6fbf8;padding:12px}.calculator legend{padding:0 4px}.calculator-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end}.calculator-grid label{font-size:11px}.calc-output{font-size:17px;font-weight:750;color:var(--accent);padding:10px 0;white-space:nowrap}.button{border:0;border-radius:8px;background:var(--accent);color:#fff;padding:11px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}.button:active{transform:translateY(1px)}.summary{margin:23px 0 12px;font-size:14px;color:var(--muted)}
+    .result-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:23px 0 12px}.summary{margin:0 auto 0 0}.small-button{border:1px solid #afc5bc;border-radius:8px;background:#fff;color:#175447;padding:8px 10px;font:inherit;font-size:12px;font-weight:650;cursor:pointer}.small-button:hover{background:#e7f3ed}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.results-table{border-collapse:collapse;width:100%;min-width:1160px;font-size:13px}.results-table th{background:#e7f0eb;color:#35564e;font-size:11px;letter-spacing:.01em;text-align:left;vertical-align:bottom;padding:11px 10px;white-space:nowrap;border-bottom:1px solid #c8d8d0}.results-table td{padding:12px 10px;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.45}.results-table tbody tr:last-child td{border-bottom:0}.results-table tbody tr:hover{background:#f4faf7}.results-table tr.excluded{background:#fff8eb}.name-en{font-size:16px;line-height:1.2;font-weight:750;display:block}.name-zh,.muted{display:block;color:var(--muted);font-size:11px;margin-top:3px}.empty{padding:42px;text-align:center;color:var(--muted);border:1px dashed #b7c9c1;border-radius:12px;background:#fff}.source-chart{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px}.source-chart h2{font-size:16px;margin:0 0 4px}.source-chart p{font-size:12px;color:var(--muted);margin:0 0 14px}.source-chart img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px;margin-top:12px}.foot{max-width:1180px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:12px;line-height:1.6}
+    @media(max-width:720px){header{padding:28px 20px}main{padding:16px}.fields{grid-template-columns:1fr 1fr;gap:13px}.field.search,.multi,.calculator{grid-column:1/-1}.choice > span{padding:10px 12px;font-size:14px}.calculator-grid{grid-template-columns:1fr 1fr}.calculator-grid .button{grid-column:1/-1}.table-wrap{margin:0 -1px}.results-table{font-size:13px}.result-tools{align-items:flex-start;flex-direction:column}.small-button{width:100%}}
+  .gem-details{max-width:900px;padding:16px;background:#f4faf7}.gem-details dl{display:grid;grid-template-columns:1fr 1fr;gap:16px}.gem-details dt{font-weight:600}.gem-details dd{margin:6px 0;font-size:14px}.gem-details small{display:block;font-weight:400}.results-table th:first-child,.results-table td:first-child{position:sticky;left:0;background:#fff;z-index:1}@media(max-width:720px){.gem-details dl{grid-template-columns:1fr}.gem-details{width:calc(100vw - 100px)}}
+    .candidate-action{display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;height:44px;padding:10px;border-color:transparent;background:transparent;color:var(--accent)}
+    .candidate-action svg{width:22px;height:22px;flex:none}
+    .candidate-action:focus-visible{outline:3px solid #72bbaa;outline-offset:2px}
+    .excluded .candidate-action{color:var(--muted)}
+    .choice input:focus-visible+span{outline:3px solid #72bbaa;outline-offset:2px}
+    #colorChoices .choice > span::before{content:"";display:inline-block;width:12px;height:12px;margin-right:6px;border-radius:50%;border:1px solid #0003;background:var(--swatch);vertical-align:-1px}
+    .results-table{min-width:900px}.results-table td.colour-cell{width:184px;min-width:184px}
+    .colour-dots{display:grid;grid-template-columns:repeat(6,26px);gap:2px;position:relative}
+    .colour-dot{width:26px;height:30px;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;cursor:pointer}
+    .colour-dot i{display:block;width:18px;height:18px;border:1px solid #0004;border-radius:50%;background:var(--swatch)}
+    .colour-dot:focus-visible{outline:2px solid var(--accent);outline-offset:-1px;border-radius:4px}
+    .colour-dot span{display:none;position:absolute;left:0;top:100%;z-index:5;background:#183b34;color:white;padding:5px 8px;border-radius:5px;font-size:13px;white-space:nowrap;pointer-events:none}
+    .colour-dot:hover span,.colour-dot:focus span{display:block}
+    .trans-cell{min-width:128px;max-width:170px}.trans-cell span,.trans-cell small{display:block;margin-top:3px;font-size:12px;overflow-wrap:anywhere}.trans-cell small{color:var(--muted)}
+
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    .choice b,.choice small{font-size:inherit;font-weight:inherit}.bi-separator{font-style:normal}
+    input,button{font-family:inherit}
+    @media(max-width:720px){
+      body{font-size:1rem;line-height:1.55}
+      header{padding:22px 16px}.title{font-size:1.625rem;line-height:1.3;letter-spacing:0}
+      .title span{display:block;font-size:1.125rem;font-weight:500;margin-top:5px}
+      .eyebrow{font-size:.75rem;line-height:1.5;letter-spacing:.04em}.sub{font-size:.875rem;line-height:1.6}
+      main{padding:16px 12px}.panel{padding:16px 12px}.notice{font-size:.875rem;line-height:1.65}
+      .fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}
+      .field label,.multi legend,.calculator legend,.calculator-grid label{font-size:.875rem;line-height:1.5;color:#41564f}
+      .multi legend{margin-bottom:10px}
+      .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .choice{min-width:0}
+      .choice > span{height:100%;min-height:60px;padding:10px 8px;border-radius:12px;font-size:.9375rem;line-height:1.4}
+      .choice b{font-weight:600}.choice small{display:block;font-size:.8125rem;line-height:1.4;margin-top:3px;overflow-wrap:anywhere;color:#51665e}
+      .choice input:checked+span small{color:#005345}.choice .bi-separator{display:none}
+      #colorChoices .choice > span::before{width:14px;height:14px}
+      input{font-size:1rem;min-height:46px;padding:11px 9px}
+      input[type=range]{height:44px;min-height:44px}
+      .range-label{flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+      .range-label output{font-size:1rem;white-space:nowrap}
+      .hint{font-size:.75rem;line-height:1.5}
+      .calculator{padding:12px;min-width:0}
+      .calculator-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      .calculator-grid>div{min-width:0}.calculator-grid label{display:block;margin-bottom:6px}
+      .calculator-grid .calc-output{grid-column:1/-1;font-size:1.25rem;padding:2px 0}
+      .button,.small-button{font-size:.875rem;line-height:1.4;min-height:44px;white-space:normal}
+      .summary{font-size:.875rem;line-height:1.6}
+      .results-table{font-size:.9375rem;min-width:1080px}
+      .results-table th{font-size:.8125rem;line-height:1.45;letter-spacing:0}
+      .results-table td{padding:12px 10px;line-height:1.55;font-variant-numeric:tabular-nums}
+      .name-en{font-size:1.125rem;line-height:1.35;font-weight:700}
+      .name-zh{font-size:.875rem;line-height:1.5;margin-top:5px;color:#4e625b}
+      .muted{font-size:.8125rem;line-height:1.5}
+      .trans-cell span{font-size:.875rem}.trans-cell small{font-size:.8125rem;line-height:1.5}
+      .gem-details{width:calc(100vw - 48px);max-width:100%;padding:12px 8px}
+      .gem-details h3{font-size:1.125rem;line-height:1.4;overflow-wrap:anywhere}
+      .gem-details h3 small{font-size:.875rem;margin-top:5px}
+      .gem-details dl{grid-template-columns:minmax(0,1fr);gap:18px}
+      .gem-details dt{font-size:.875rem;line-height:1.5;color:#41564f}
+      .gem-details dd{font-size:1rem;line-height:1.7;margin:6px 0 0;overflow-wrap:anywhere;word-break:normal}
+      .foot{font-size:.8125rem;line-height:1.7;padding:0 16px 30px}
+    }
+    .chart-picker{grid-column:1/-1;border:0;padding:0;margin:0 0 2px;min-width:0}
+    .chart-picker legend{font-size:13px;color:var(--muted);margin-bottom:8px}
+    .chart-segments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative;padding:4px;background:#eaf1ed;border:1px solid #c8d4ce;border-radius:12px;max-width:480px;isolation:isolate}
+    .chart-segments::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:8px;background:var(--accent);transform:translateX(100%);transition:transform .2s ease;z-index:-1}
+    .chart-segments:has(input[value="A"]:checked)::before{transform:translateX(0)}
+    .chart-segments:has(input[value="B"]:checked)::before{transform:translateX(200%)}
+    .chart-segments label{position:relative;cursor:pointer;min-width:0}
+    .chart-segments input{position:absolute;opacity:0;width:1px;height:1px;min-height:0}
+    .chart-segments span{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px;font-size:15px;color:#35564e;border-radius:8px}
+    .chart-segments input:checked+span{color:white;background:var(--accent);font-weight:650}
+    .chart-segments input:focus-visible+span{outline:3px solid #dd9b33;outline-offset:2px}
+    .source-number{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:12px;color:#4e625b}
+    @media(prefers-reduced-motion:reduce){.chart-segments::before{transition:none}}
+    @media(max-width:720px){.chart-segments{max-width:none}.chart-picker legend{font-size:.875rem}.source-number{font-size:.8125rem}}
+    .sort-toggle{display:flex;align-items:center;gap:9px;min-height:44px;cursor:pointer;font-size:13px;position:relative}
+    .sort-toggle input{position:absolute;opacity:0;width:1px;height:1px;min-height:0;padding:0}
+    .sort-track{width:40px;height:24px;flex:none;border-radius:20px;background:#89958f;position:relative}
+    .sort-track::after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff}
+    .sort-toggle input:checked+.sort-track{background:var(--accent)}
+    .sort-toggle input:checked+.sort-track::after{transform:translateX(16px)}
+    .sort-toggle input:focus-visible+.sort-track{outline:3px solid #dd9b33;outline-offset:3px}
+    .sort-toggle small{display:block;font-size:12px;color:var(--muted)}
+    .sort-note{flex-basis:100%;margin:0;font-size:12px;line-height:1.5;color:var(--muted)}
+    .match-percent{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--accent);font-weight:650}
+    .match-percent span{display:block}
+  </style>
+</head>
+<body>
+  <header><div class="eyebrow">个人课堂参考 · PERSONAL CLASSROOM REFERENCE · CHART A + B · 103 项 / MATERIALS</div><h1 class="title">宝石物性检索 <span lang="en">/ Gem Property Finder</span></h1><p class="sub">根据测得的折射率、比重与光性筛选候选材料。 / Filter possible gem materials by RI, SG, colour and optical character.</p></header>
+  <main>
+    <div class="notice">本工具按你提供的 GIA Gem Property Chart A、B（1992）照片建立，供个人学习与课堂使用。筛选结果是候选范围，不能替代完整鉴定流程；请结合显微镜、光谱、UV、内含物等复核。 / Built from your GIA Gem Property Chart A and B (1992) photos for personal classroom reference. Results are candidates only and require full gemological confirmation.</div>
+    <section class="panel" aria-label="筛选条件 / Filters">
+      <div class="fields">
+        <fieldset class="chart-picker"><legend>数据范围 / Chart scope</legend><div class="chart-segments">
+          <label><input type="radio" name="chart" value="A"><span>Chart A</span></label>
+          <label><input type="radio" name="chart" value="all" checked><span>全部 / All</span></label>
+          <label><input type="radio" name="chart" value="B"><span>Chart B</span></label>
+        </div></fieldset>
+        <div class="field search"><label for="q">名称或别名（支持模糊搜索） / Name or alias (fuzzy search)</label><input id="q" type="search" placeholder="例如：翡翠、emerald、garnet"></div>
+        <fieldset class="multi"><legend>颜色（可多选） / Colour (multi-select)</legend><div class="choices" id="colorChoices">
+          <label class="choice" style="--swatch:linear-gradient(135deg,#fff 40%,#d7e9ee 55%,#fff 70%)"><input name="color" value="无色" type="checkbox"><span><b>无色</b><i class="bi-separator"> / </i><small lang="en">Colourless</small></span></label>
+          <label class="choice" style="--swatch:#98358c"><input name="color" value="紫" type="checkbox"><span><b>紫</b><i class="bi-separator"> / </i><small lang="en">Purple (P)</small></span></label>
+          <label class="choice" style="--swatch:#c83246"><input name="color" value="红" type="checkbox"><span><b>红</b><i class="bi-separator"> / </i><small lang="en">Red</small></span></label>
+          <label class="choice" style="--swatch:#ef8e2e"><input name="color" value="橙" type="checkbox"><span><b>橙</b><i class="bi-separator"> / </i><small lang="en">Orange</small></span></label>
+          <label class="choice" style="--swatch:#ebcf32"><input name="color" value="黄" type="checkbox"><span><b>黄</b><i class="bi-separator"> / </i><small lang="en">Yellow</small></span></label>
+          <label class="choice" style="--swatch:#349166"><input name="color" value="绿" type="checkbox"><span><b>绿</b><i class="bi-separator"> / </i><small lang="en">Green</small></span></label>
+          <label class="choice" style="--swatch:#3988cd"><input name="color" value="蓝" type="checkbox"><span><b>蓝</b><i class="bi-separator"> / </i><small lang="en">Blue</small></span></label>
+          <label class="choice" style="--swatch:#6560b6"><input name="color" value="蓝紫" type="checkbox"><span><b>蓝紫</b><i class="bi-separator"> / </i><small lang="en">Violet (V)</small></span></label>
+          <label class="choice" style="--swatch:#8b5940"><input name="color" value="褐" type="checkbox"><span><b>褐</b><i class="bi-separator"> / </i><small lang="en">Brown</small></span></label>
+          <label class="choice" style="--swatch:#fff"><input name="color" value="白" type="checkbox"><span><b>白</b><i class="bi-separator"> / </i><small lang="en">White</small></span></label>
+          <label class="choice" style="--swatch:#a7abad"><input name="color" value="灰" type="checkbox"><span><b>灰</b><i class="bi-separator"> / </i><small lang="en">Gray</small></span></label>
+          <label class="choice" style="--swatch:#2c3035"><input name="color" value="黑" type="checkbox"><span><b>黑</b><i class="bi-separator"> / </i><small lang="en">Black</small></span></label>
+        </div></fieldset>
+        <fieldset class="multi"><legend>光性（可多选） / Optical character (multi-select)</legend><div class="choices" id="opticChoices">
+          <label class="choice"><input name="optic" value="SR" type="checkbox"><span><b>SR 单折射</b><i class="bi-separator"> / </i><small lang="en">Singly refractive</small></span></label><label class="choice"><input name="optic" value="DR" type="checkbox"><span><b>DR 双折射</b><i class="bi-separator"> / </i><small lang="en">Doubly refractive</small></span></label><label class="choice"><input name="optic" value="ADR" type="checkbox"><span><b>ADR 异常双折射</b><i class="bi-separator"> / </i><small lang="en">Anomalous DR</small></span></label><label class="choice"><input name="optic" value="AGG" type="checkbox"><span><b>AGG 集合体</b><i class="bi-separator"> / </i><small lang="en">Aggregate</small></span></label>
+        </div></fieldset>
+        <fieldset class="multi"><legend>透明度（可多选） / Transparency (multi-select) · <span id="transSelection">不限 / Any</span></legend><div class="choices">
+        <label class="choice"><input name="trans" value="Tp" type="checkbox"><span><b>TP 透明</b><i class="bi-separator"> / </i><small lang="en">Transparent</small></span></label>
+        <label class="choice"><input name="trans" value="S-Tp" type="checkbox"><span><b>STP 亚透明</b><i class="bi-separator"> / </i><small lang="en">Semitransparent</small></span></label>
+        <label class="choice"><input name="trans" value="Tl" type="checkbox"><span><b>TL 半透明</b><i class="bi-separator"> / </i><small lang="en">Translucent</small></span></label>
+        <label class="choice"><input name="trans" value="S-Tl" type="checkbox"><span><b>STL 微透明</b><i class="bi-separator"> / </i><small lang="en">Semitranslucent</small></span></label>
+        <label class="choice"><input name="trans" value="O" type="checkbox"><span><b>OP 不透明</b><i class="bi-separator"> / </i><small lang="en">Opaque</small></span></label>
+      </div></fieldset>
+        <fieldset class="multi"><legend>荧光（可多选） / Fluorescence (multi-select)</legend><div class="choices" id="uvChoices">
+          <label class="choice"><input name="uv" value="LW" type="checkbox"><span title="长波 / Long-wave">LW</span></label>
+          <label class="choice"><input name="uv" value="SW" type="checkbox"><span title="短波 / Short-wave">SW</span></label>
+        </div><p class="hint">LW 长波 / Long-wave · SW 短波 / Short-wave。按手动校对选择筛选：✓ 有，— 无；双选匹配任一波段。/ Uses saved selections: ✓ yes, — no; either selected band matches.</p></fieldset>
+        <div class="field"><label for="ri">测得 RI / Measured RI</label><input id="ri" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" aria-describedby="riError" placeholder="例如 / e.g. 1.620"><span id="riError" class="input-error" role="status"></span></div>
+        <div class="field"><label class="range-label" for="riTol">RI 误差 / RI tolerance ± <output id="riTolValue">0.000</output></label><input id="riTol" type="range" min="0" max="0.300" step="0.001" value="0"><p class="hint">拖动以扩大测量区间 / Drag to expand range</p></div>
+        <div class="field"><label for="sg">测得 SG / Measured SG</label><input id="sg" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" aria-describedby="sgError" placeholder="例如 / e.g. 3.34"><span id="sgError" class="input-error" role="status"></span></div>
+        <div class="field"><label class="range-label" for="sgTol">SG 误差 / SG tolerance ± <output id="sgTolValue">0.000</output></label><input id="sgTol" type="range" min="0" max="0.50" step="0.001" value="0"><p class="hint">拖动以扩大测量区间 / Drag to expand range</p></div>
+        <fieldset class="calculator"><legend>SG 自动计算 / Automatic SG calculator</legend><div class="calculator-grid">
+          <div><label for="airWeight">空气中重量 / Weight in air</label><input id="airWeight" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 / e.g. 3.42"></div>
+          <div><label for="waterWeight">水中重量 / Weight in water</label><input id="waterWeight" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="例如 / e.g. 2.40"></div>
+          <div class="calc-output" id="sgCalcResult">SG —</div>
+          <button class="button" id="useSg" type="button" disabled>使用此结果 / Use result</button>
+        </div></fieldset>
+      </div>
+    </section>
+    <div class="result-tools"><p class="summary" id="summary"></p><label class="sort-toggle"><input id="sortByMatch" type="checkbox" role="switch" checked aria-describedby="sortNote"><span class="sort-track" aria-hidden="true"></span><span>按置信度排序<small lang="en">Sort by match</small></span></label><button class="small-button" id="restoreAll" type="button" hidden>恢复全部 / Restore all</button><p class="sort-note" id="sortNote">按 RI、SG 与标称值的接近程度排序；区间取中点，独立读数取最近值。百分比不是鉴定正确率。 / Ranked by relative RI/SG distance to nominal values: interval midpoints or nearest separate readings. Percentages are not identification probabilities.</p></div><div class="table-wrap"><table class="results-table" id="results"></table></div>
+  </main>
+  <footer class="foot">
+    <p>来源 / Source：GIA Gem Property Chart A、B，© 1992 The Gemological Institute of America。Chart A 64 项，Chart B 保留 39 项（涂黑名称的 24 项已排除）。英文保留原表转录，中文为辅助译文；Chlorastrolite、Saussurite、Prosopite 的中文名待核。编号按各表原始行序保留，不因筛选重新编号。 / Chart A: 64 entries; Chart B: 39 retained, 24 blacked-out names excluded. English is transcribed source text; Chinese is editorial translation. Chinese names for Chlorastrolite, Saussurite and Prosopite remain pending. Numbers retain source-row order. Historical classroom reference, not current identification standards or official GIA software.</p>
+    <p>点测及缺失值 / Spot readings and missing values：只有点测 RI 的材料按各独立读数及原表 Range 匹配，不连成区间。原表未提供 RI 数值的材料不因 RI 被排除，并明确标为未知，不作“任意值”解释。 / Spot-only RI entries use separate readings plus source Range. Materials without numeric source RI remain candidates, explicitly labelled unknown rather than Any.</p>
+    <p>筛选 / Filtering：RI、SG 先计入原表 Range，再叠加独立的测量误差 ±。颜色包括常见色、少见色及修饰色；保留原表 P（Purple，紫）与 V（Violet，蓝紫）的区分。选择 ADR 时按 SR 检索；AGG 同时参考光性栏及备注。拼合石原表为 Any，不因数值或光性被排除。 / Source variation is applied before the independent measurement tolerance. All chart colour categories are searchable. Selecting ADR searches SR materials. Additional AGG reactions come from comments. Assembled stones remain possible for any readings.</p>
+    <p>光谱星号 / Spectrum key：*** 几乎总能发现；** 较少发现；两者出现时须结合其他测试。* 有时发现，不一定具诊断性。空白表示未发现或不具诊断性。 / *** Almost always found; ** less often found; either supports identification when combined with other tests. * Sometimes found, not always diagnostic. Blank: none found or not diagnostic.</p>
+    <p>安全说明 / Safety：备注中的热针、酸液、溶剂、重液及牙齿接触是原表历史描述，不是操作建议；可能损伤宝石或危害健康，请勿自行尝试。单一候选匹配不等于鉴定结论。 / Historical hot-point, acid, solvent, heavy-liquid and tooth-contact descriptions are not instructions; they may damage gems or harm health. A filter match is not an identification.</p>
+  </footer>
+  <script src="gem-data.js"></script>
+  <script src="chart-b-source.js"></script>
+  <script src="chart-b-data.js"></script>
+  <script src="base-rows.js"></script>
+  <script src="review-model.js"></script>
+  <script src="review-overrides.js"></script>
+  <script>
+  const rows=ReviewModel.applyOverrides(createBaseRows(),reviewOverrides);
+  const colorEnglish={无色:'Colourless',红:'Red',蓝紫:'Violet',橙:'Orange',黄:'Yellow',绿:'Green',蓝:'Blue',紫:'Purple',褐:'Brown',黑:'Black',白:'White',灰:'Gray'};
+  const systemEnglish={六方晶系:'Hexagonal',四方晶系:'Tetragonal',立方晶系:'Cubic',斜方晶系:'Orthorhombic',单斜晶系:'Monoclinic',三斜晶系:'Triclinic',无定形:'Amorphous',有机集合体:'Organic aggregate',隐晶质集合体:'Cryptocrystalline aggregate','岩石／集合体':'Rock / aggregate',多材料:'Composite material'};
+  const escapeHtml=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pairText=p=>p[0]===p[1]?p[0]:p[0]+' / '+p[1];
+  const sourceBlank=pairText(chartVocabulary.blank);
+  const transWords={Tp:'透明 / Transparent','S-Tp':'亚透明 / Semitransparent',Tl:'半透明 / Translucent','S-Tl':'微透明 / Semitranslucent',O:'不透明 / Opaque'};
+  const transLabel=value=>value.split('–').map(t=>({Tp:'TP','S-Tp':'STP',Tl:'TL','S-Tl':'STL',O:'OP'}[t]||t)).join('–');
+  const transparencyOrder=['Tp','S-Tp','Tl','S-Tl','O'];
+  function transparencyMatches(source,selected){
+    if(!selected.length)return true;
+    const bounds=source.split('–').map(t=>transparencyOrder.indexOf(t));
+    return selected.some(t=>{const i=transparencyOrder.indexOf(t);return i>=bounds[0]&&i<=bounds[bounds.length-1]});
+  }
+  const swatches={无色:'linear-gradient(135deg,#fff 40%,#d7e9ee 55%,#fff 70%)',红:'#c83246',紫:'#98358c',橙:'#ef8e2e',黄:'#ebcf32',绿:'#349166',蓝:'#3988cd',蓝紫:'#6560b6',褐:'#8b5940',黑:'#2c3035',白:'#fff',灰:'#a7abad'};
+  const colourDots=value=>'<div class="colour-dots">'+['无色','紫','红','橙','黄','绿','蓝','蓝紫','褐','白','灰','黑'].filter(c=>value.split(' ').includes(c)).map(c=>'<button type="button" class="colour-dot" style="--swatch:'+swatches[c]+'" aria-label="'+c+' / '+colorEnglish[c]+'"><i aria-hidden="true"></i><span aria-hidden="true">'+c+' / '+colorEnglish[c]+'</span></button>').join('')+'</div>';
+  const axisWords={'U+':'一轴晶正光性 / Uniaxial positive','U−':'一轴晶负光性 / Uniaxial negative','U±':'一轴晶正或负光性 / Uniaxial positive or negative','B+':'二轴晶正光性 / Biaxial positive','B−':'二轴晶负光性 / Biaxial negative','B±':'二轴晶正或负光性 / Biaxial positive or negative'};
+  const pleoWords={'2':'二色性 / Dichroic','3':'三色性 / Trichroic',S:'强 / Strong',M:'中等 / Moderate',W:'弱 / Weak'};
+  const variation=(p,m,d=3)=>p===0&&m===0?sourceBlank:p===m?'± '+p.toFixed(d):'+'+p.toFixed(d)+' / −'+m.toFixed(d);
+  const intervalText=intervals=>intervals===null?'任意 / Any':intervals.map(([a,b])=>fmt(a,b)).join('；或 / or ');
+
+  const $=id=>document.getElementById(id), fmt=(a,b,d=3)=>a==null?'—':a===b?a.toFixed(d):`${a.toFixed(d)}–${b.toFixed(d)}`;
+  const hiddenIds=new Set([64]), expandedIds=new Set();
+  // Ranking uses nominal values, independently of Range/tolerance filtering.
+  function nominalIntervals(row,field){
+    const d=row.chart,ri=field==='riIntervals';
+    const norm=(ri?d.norm:d.sgNorm)||'';
+    if(norm==='Any')return null;
+    const source=norm||(ri?(d.spot||'').replace(/[；;]/g,','):'');
+    if(!source.trim())return null;
+    const values=chartIntervals(source,0,0).filter(pair=>pair.every(v=>Number.isFinite(v)&&v>0));
+    return values.length?values:null;
+  }
+  function positiveDecimal(value){
+    const text=String(value).trim().replace(',','.');
+    if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text))return null;
+    const number=Number(text);return Number.isFinite(number)&&number>0?number:null;
+  }
+  function measuredInput(id){
+    const raw=$(id).value.trim(),value=positiveDecimal(raw),invalid=raw!==''&&value===null;
+    $(id).setAttribute('aria-invalid',String(invalid));
+    $(id+'Error').textContent=invalid?'请输入有效正数；此项暂不参与筛选 / Enter a finite positive decimal; this filter is skipped.':'';
+    return value===null?'':raw.replace(',','.');
+  }
+  function numericMatchDistance(intervals,value){
+    const measured=positiveDecimal(value);
+    if(measured===null||!intervals?.length)return null;
+    const distance=Math.min(...intervals.map(([low,high])=>Math.abs((low+high)/2-measured)));
+    return (distance<1e-9?0:distance)/measured;
+  }
+  function matchPercent(intervals,value){
+    const distance=numericMatchDistance(intervals,value);
+    if(distance===null)return '—';
+    if(distance===0)return '100%';
+    return Math.min(99.99,100/(1+distance)).toFixed(2)+'%';
+  }
+  function sortByNumericMatch(list,ri,sg){
+    const inputs=[['riIntervals',ri],['sgIntervals',sg]].filter(([,v])=>positiveDecimal(v)!==null);
+    if(!inputs.length)return list;
+    const scored=list.map((row,index)=>{
+      let missing=0,total=0;
+      for(const [field,value] of inputs){
+        const distance=numericMatchDistance(nominalIntervals(row,field),value);
+        if(distance===null){missing++;continue;}
+        total+=distance;
+      }
+      return {row,index,missing,score:total/inputs.length};
+    });
+    scored.sort((a,b)=>{
+      if(a.row.n===64||b.row.n===64)return Number(a.row.n===64)-Number(b.row.n===64);
+      if(a.missing!==b.missing)return a.missing-b.missing;
+      const delta=a.score-b.score;
+      return Math.abs(delta)>1e-12?delta:a.index-b.index;
+    });
+    return scored.map(x=>x.row);
+  }
+  const uvSummary=d=>Object.entries(ReviewModel.uvBands(d)).map(([b,v])=>b+' '+(v===null?'? 未知 / Unknown':v?'✓':'—')).join(' · ');
+  function render(){const trans=[...document.querySelectorAll('input[name="trans"]:checked')].map(x=>x.value);$('transSelection').textContent=trans.length?trans.map(transLabel).join(' · '):'不限 / Any';const q=$('q').value.trim().toLowerCase(),colors=[...document.querySelectorAll('input[name="color"]:checked')].map(x=>x.value),optics=[...document.querySelectorAll('input[name="optic"]:checked')].map(x=>x.value),ri=measuredInput('ri'),riTol=$('riTol').value,sg=measuredInput('sg'),sgTol=$('sgTol').value;
+   $('riTolValue').value=Number(riTol).toFixed(3);$('sgTolValue').value=Number(sgTol).toFixed(3);
+   const uv=[...document.querySelectorAll('input[name="uv"]:checked')].map(x=>x.value);
+   const scope=[...document.querySelectorAll('input[name="chart"]:checked')][0]?.value||'all';
+   const used=v=>v!==''&&!Number.isNaN(Number(v)), fuzzy=(query,text)=>{if(!query)return true;const target=text.replace(/[\s()\-]/g,'').toLowerCase(),needle=query.replace(/[\s()\-]/g,'');if(target.includes(needle))return true;let i=0;for(const char of target)if(char===needle[i])i++;return i===needle.length},rangeMatches=(measured,tolerance,intervals)=>!used(measured)||intervals===null||intervals.some(([low,high])=>low<=Number(measured)+Number(tolerance)+1e-9&&high>=Number(measured)-Number(tolerance)-1e-9), matched=rows.filter(x=>{const text=`${x.en} ${x.zh} ${x.aliases}`;return (scope==='all'||x.sourceChart===scope)&&ReviewModel.uvMatches(x.chart,uv)&&transparencyMatches(x.chart.trans,trans)&&fuzzy(q,text)&&(colors.length===0||colors.some(color=>x.colors.split(' ').includes(color)))&&rangeMatches(ri,riTol,x.riIntervals)&&rangeMatches(sg,sgTol,x.sgIntervals)&&(optics.length===0||optics.some(optic=>x.optics.split(' ').includes(optic==='ADR'?'SR':optic)));}), excluded=matched.filter(x=>hiddenIds.has(x.n)),sourceList=[...matched.filter(x=>x.n!==64),...matched.filter(x=>x.n===64)];
+   const list=$('sortByMatch').checked?sortByNumericMatch(sourceList,ri,sg):sourceList;
+   const errorText=(v,t,d)=>used(v)?` ${Number(v).toFixed(d)}${Number(t)>0?` ± ${Number(t).toFixed(d)}`:''}`:'';
+   $('summary').textContent=`找到 ${list.length} 个候选材料 / ${list.length} candidate materials${excluded.length?` · 已隐藏 ${excluded.length} 个 / ${excluded.length} hidden`:''}${q?' · 名称模糊搜索 / fuzzy name search':''}${colors.length?` · 颜色 / colour: ${colors.join('、')}`:''}${optics.length?` · 光性 / optical: ${optics.join('、')}`:''}${errorText(ri,riTol,3)?` · RI${errorText(ri,riTol,3)}`:''}${errorText(sg,sgTol,3)?` · SG${errorText(sg,sgTol,3)}`:''}`;
+   if(uv.length)$('summary').textContent+=' · 荧光 / Fluorescence: '+uv.join(' / ');
+   $('restoreAll').hidden=hiddenIds.size===0;
+   const bilingualColours=value=>value?value.split(' ').map(c=>`${c} / ${colorEnglish[c]||c}`).join(' · '):'—';
+   $('results').innerHTML=list.length?`<thead><tr><th>折叠 / Fold</th><th>#<br>编号</th><th>宝石材料<br>Gem material</th><th>颜色 / Colour</th><th>透明度<br>Transparency</th><th>RI</th><th>SG</th><th>光性 / Optics</th><th>详情 / Details</th><th>匹配程度 / Match</th></tr></thead><tbody>${list.map(x=>{
+     const folded=hiddenIds.has(x.n),open=expandedIds.has(x.n);
+     const eyeIcon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${folded?'<path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10 10 0 0 1 12 5c7 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.3 6.3A17 17 0 0 0 2 12s3 7 10 7a10 10 0 0 0 5.7-1.7"/>':'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>'}</svg>`;
+     const control=`<td><button class="small-button candidate-action" data-id="${x.n}" aria-expanded="${!folded}" aria-label="${folded?'恢复 / Restore':'隐藏 / Hide'} ${escapeHtml(x.en)}" title="${folded?'恢复 / Restore':'隐藏 / Hide'}">${eyeIcon}</button></td><td class="source-number">Chart ${x.sourceChart}<br>${x.sourceRow}</td>`;
+     if(folded)return `<tr class="excluded">${control}<td colspan="8"><span class="muted">已折叠 / Collapsed</span></td></tr>`;
+
+     const d=x.chart;
+     const riDisplay=x.riUnknown?'原表未给数值 / No numeric source RI':intervalText(x.riIntervals);
+     const sgDisplay=x.sgUnknown?'未知 SG / Unknown SG':intervalText(x.sgIntervals);
+     const properties=[
+       ['宝石材料 / Gem material',x.en+' / '+x.zh],
+       ['常见颜色（横线） / Common colours (horizontal line)',bilingualColours(d.common)],
+       ['少见颜色（竖线） / Uncommon colours (vertical line)',bilingualColours(d.uncommon)],
+       ['修饰色（半格） / Modifying colours (half box)',bilingualColours(d.modifier)],
+       ['颜色说明 / Colour note',d.colourNote||(!d.reviewedRange&&chartDyed.has(x.n)?'可能染色 / May be dyed':sourceBlank)],
+       ['透明度 / Transparency',transLabel(d.trans)+' · '+d.trans.split('–').map(t=>transWords[t]).join(' → ')],
+       ['现象及其他外观特征 / Phenomena and distinctive visual characteristics',pairText(d.phenomena)],
+       ['RI 标准值 / RI Norm',d.norm==='Any'?'任意 / Any':d.norm||sourceBlank],
+       ['RI 原表变化范围 / RI Range',d.reviewedRange||x.sourceChart==='B'?(d.riSourceRange||sourceBlank):x.n===44?'± 0.000（原表明确标注 / explicitly printed）':variation(d.plus,d.minus)],
+       ['RI 点测读数 † / RI spot reading †',d.spot||sourceBlank],
+       ['RI 筛选区间（已计入原表 Range） / RI filter interval (source Range included)',riDisplay],
+       ['双折射率 / Birefringence',d.biref||sourceBlank],
+       ['光性 / Optical character',d.optic==='Any'?'任意 / Any':d.optic.split(' ').map(o=>({SR:'SR 单折射 / Singly refractive',DR:'DR 双折射 / Doubly refractive',AGG:'AGG 集合体 / Aggregate'}[o])).join('；或 / or ')],
+       ['轴性与光性符号 / Optic axis and sign',axisWords[d.axis]||d.axis||sourceBlank],
+       ['晶系 / Crystal system',d.system?d.system+' / '+(systemEnglish[d.system]||d.system)+(d.system==='无定形'?'；原表注：结构可能部分结晶 / Source note: structure may be partially crystalline':''):sourceBlank],
+       ['多色性 / Pleochroism',d.pleo?d.pleo.split(' ').map(p=>pleoWords[p]).join(' · '):sourceBlank],
+       ['吸收光谱（nm） / Spectra (nm)',pairText(d.spectra)],
+       ['荧光筛选 / Fluorescence selection',uvSummary(d)],
+       ['紫外荧光原文 / Source ultraviolet fluorescence',pairText(d.uv)],
+       ['比重标准值 / SG Norm',d.sgNorm==='Any'?'任意 / Any':d.sgNorm],
+       ['比重原表变化范围 / SG source variation',d.reviewedRange||x.sourceChart==='B'?(d.sgSourceRange||sourceBlank):variation(d.sgPlus,d.sgMinus,2)],
+       ['比重筛选区间 / SG filter interval',sgDisplay],
+       ['莫氏硬度 / Mohs hardness',d.hard==='Any'?'任意 / Any':d.hard],
+       ['断口、解理与裂理 / Fracture, cleavage and parting',pairText(d.fracture)],
+       ['原表备注 / Source comments',pairText(d.comments)],
+     ];
+     if(x.riOverLimit)properties.splice(7,0,['折射仪量程 / Refractometer limit','原表标记超量程 / Source marks RI over limit']);
+     const detail=open?`<tr id="detail-${x.n}"><td colspan="10"><div class="gem-details" id="detail-content-${x.n}"><h3>${escapeHtml(x.en)} <small>${escapeHtml(x.zh)}</small></h3><dl>${properties.map(([k,v])=>`<div><dt>${k}</dt><dd>${escapeHtml(v)}</dd></div>`).join('')}</dl></div></td></tr>`:'';
+     return `<tr>${control}<td><span class="name-en">${escapeHtml(x.en)}</span><span class="name-zh">${escapeHtml(x.zh)}</span><span class="muted" title="荧光：✓ 可能有，— 无，? 未知 / Fluorescence: ✓ possible, — inert, ? unknown">${escapeHtml(uvSummary(d))}</span></td><td class="colour-cell">${colourDots(x.colors)}</td><td class="trans-cell"><strong>${transLabel(d.trans)}</strong><span>${escapeHtml(d.trans.split('–').map(t=>transWords[t].split(' / ')[0]).join('–'))}</span><small lang="en">${escapeHtml(d.trans.split('–').map(t=>transWords[t].split(' / ')[1]).join('–'))}</small></td><td>${riDisplay}</td><td>${sgDisplay}</td><td>${x.optics||'—'}</td><td><button class="small-button detail-action" data-id="${x.n}" aria-expanded="${open}" aria-controls="detail-${x.n}">${open?'收起 / Close':'展开 / Details'}</button></td><td class="match-percent"><span>RI ${matchPercent(nominalIntervals(x,'riIntervals'),ri)}</span><span>SG ${matchPercent(nominalIntervals(x,'sgIntervals'),sg)}</span></td></tr>${detail}`;
+   }).join('')}</tbody>`:`<tbody><tr><td class="empty" colspan="10">没有相符候选 / No matching candidates.</td></tr></tbody>`;
+   document.querySelectorAll('.detail-action').forEach(button=>button.addEventListener('click',()=>{const id=Number(button.dataset.id),opening=!expandedIds.has(id);opening?expandedIds.add(id):expandedIds.delete(id);render();if(opening){$('results').parentElement.scrollLeft=0;$('detail-content-'+id).scrollIntoView({block:'nearest',inline:'start'});}}));
+   document.querySelectorAll('.candidate-action').forEach(button=>button.addEventListener('click',()=>{const id=Number(button.dataset.id);if(hiddenIds.has(id))hiddenIds.delete(id);else hiddenIds.add(id);render();}));
+  }
+  function updateSgCalculator(){const air=Number($('airWeight').value.trim().replace(',','.')),water=Number($('waterWeight').value.trim().replace(',','.')),valid=Number.isFinite(air)&&Number.isFinite(water)&&air>water&&water>0,result=valid?air/(air-water):null;$('sgCalcResult').textContent=result==null?'SG —':`SG ${result.toFixed(3)}`;$('useSg').disabled=result==null;$('useSg').dataset.result=result==null?'':result.toFixed(3);}
+  $('sortByMatch').addEventListener('change',render);
+  ['q','ri','riTol','sg','sgTol'].forEach(id=>$(id).addEventListener('input',render));['airWeight','waterWeight'].forEach(id=>$(id).addEventListener('input',updateSgCalculator));$('useSg').addEventListener('click',()=>{const result=$('useSg').dataset.result;if(result){$('sg').value=result;render();$('sg').focus();}});$('restoreAll').addEventListener('click',()=>{hiddenIds.clear();render();});document.querySelectorAll('input[name="color"],input[name="optic"],input[name="trans"],input[name="uv"],input[name="chart"]').forEach(el=>el.addEventListener('change',render));updateSgCalculator();render();
+  </script>
+</body></html>
